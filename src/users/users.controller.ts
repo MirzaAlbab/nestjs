@@ -7,14 +7,17 @@ import {
   Patch,
   Param,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+  @UseInterceptors(SerializeInterceptor)
   @Get()
   findAllUsers(@Query('email') email: string) {
     return this.usersService.find(email);
