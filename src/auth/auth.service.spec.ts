@@ -1,12 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
+import { UsersService } from '../users/users.service';
+import { User } from 'src/users/user.entity';
 
 describe('AuthService', () => {
+  const fakeUsersService: Partial<UsersService> = {
+    find: () => Promise.resolve([]),
+    create: (name: string, email: string, password: string) => {
+      return Promise.resolve({ id: 1, name, email, password } as User);
+    },
+  };
+
   let service: AuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
+      providers: [
+        AuthService,
+        { provide: UsersService, useValue: fakeUsersService },
+      ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
@@ -14,5 +26,20 @@ describe('AuthService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('should create a new user', async () => {
+    const user = await service.register(
+      'John Doe',
+      'john.doe@example.com',
+      'password123',
+    );
+    expect(user.id).toBe(1);
+    expect(user.name).toBe('John Doe');
+    expect(user.email).toBe('john.doe@example.com');
+    expect(user.password).not.toEqual('password123');
+    const [salt, hash] = user.password.split('.');
+    expect(salt).toBeDefined();
+    expect(hash).toBeDefined();
   });
 });
