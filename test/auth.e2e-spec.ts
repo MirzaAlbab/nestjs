@@ -13,19 +13,19 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    setupApp(app);
+    // setupApp(app);
     await app.init();
   });
 
   it('handle register', () => {
     return request(app.getHttpServer())
       .post('/auth/register')
-      .send({ name: 'test', email: 'test@gmail.com', password: 'test' })
+      .send({ name: 'test', email: 'test1@gmail.com', password: 'test' })
       .expect(201)
       .then(({ body }: request.Response) => {
         expect(body.id).toBeDefined();
         expect(body.name).toBe('test');
-        expect(body.email).toBe('test@gmail.com');
+        expect(body.email).toBe('test1@gmail.com');
       });
   });
 });
