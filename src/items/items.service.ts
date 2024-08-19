@@ -17,6 +17,13 @@ export class ItemsService {
       .createQueryBuilder()
       .select('*')
       .where('isActive = :isActive', { isActive: true })
+      .andWhere('name LIKE :name', { name: `%${queryItemDto.name}%` })
+      .andWhere('location LIKE :location', {
+        location: `%${queryItemDto.location}%`,
+      })
+      .andWhere('category LIKE :category', {
+        category: `%${queryItemDto.category}%`,
+      })
       .getRawMany();
   }
 
