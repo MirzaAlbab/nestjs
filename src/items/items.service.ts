@@ -12,19 +12,25 @@ export class ItemsService {
     @InjectRepository(Item) private itemRepository: Repository<Item>,
   ) {}
 
-  getAllItems(queryItemDto: QueryItemDto) {
-    return this.itemRepository
+  async getAllItems(queryItemDto: QueryItemDto) {
+    const query = await this.itemRepository
       .createQueryBuilder()
       .select('*')
-      .where('isActive = :isActive', { isActive: true })
-      .andWhere('name LIKE :name', { name: `%${queryItemDto.name}%` })
-      .andWhere('location LIKE :location', {
+      .where('isActive = :isActive', { isActive: true });
+    if (queryItemDto.name) {
+      query.andWhere('name LIKE :name', { name: `%${queryItemDto.name}%` });
+    }
+    if (queryItemDto.location) {
+      query.andWhere('location LIKE :location', {
         location: `%${queryItemDto.location}%`,
-      })
-      .andWhere('category LIKE :category', {
+      });
+    }
+    if (queryItemDto.category) {
+      query.andWhere('category LIKE :category', {
         category: `%${queryItemDto.category}%`,
-      })
-      .getRawMany();
+      });
+    }
+    return query.getRawMany();
   }
 
   create(item: CreateItemDto, user: User) {
