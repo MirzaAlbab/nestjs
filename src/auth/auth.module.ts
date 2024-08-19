@@ -4,9 +4,7 @@ import { AuthController } from './auth.controller';
 import { UsersService } from '../users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
-import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { CurrentUserMiddleware } from './middlewares/current-user.middleware';
+import { CurrentUserMiddleware } from './middlewares/current-user.middlewares';
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   providers: [AuthService, UsersService],
