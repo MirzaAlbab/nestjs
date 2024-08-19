@@ -12,9 +12,13 @@ export class User {
 
   @Column()
   email: string;
+
   @Column()
   @Exclude()
   password: string;
+
+  @Column({ default: true })
+  isAdmin: boolean;
 
   @OneToMany(() => Item, (item) => item.user)
   items: Item[];
